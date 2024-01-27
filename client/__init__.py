@@ -39,7 +39,7 @@ class Client:
                 logging.info(f"[{self.profile_id}] All groups added")
                 break
 
-            sleep(1)
+            sleep(2)
 
             self.driver.find_element(
                 By.LINK_TEXT, "Поделиться в группе" 
@@ -48,7 +48,7 @@ class Client:
             sleep(2)
 
             groups = self.driver.find_elements(
-                By.CSS_SELECTOR, "[class=\"ucard-mini_cnt_i ellip\"]"
+                By.CSS_SELECTOR, "[id^=\"reshare_XpostGroupSuggest_\"]>div>:nth-child(2)>:first-child"
             )
             
             if len(groups) == 0:
@@ -58,11 +58,10 @@ class Client:
             for group in groups:
                 group_name = group.text
                 if group_name not in last_groups:
+                    logging.info(f"[{self.profile_id}] Sending post to {group_name}")
                     group.click()
 
                     sleep(2)
-                    logging.info(f"[{self.profile_id}] Sending post to {group_name}")
-
                     self.driver.find_element(
                         By.CSS_SELECTOR, "[data-l=\"t,button.submit\"]"
                     ).click()
