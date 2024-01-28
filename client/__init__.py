@@ -60,8 +60,8 @@ class Client:
             for group in groups:
                 group_name = group.text
                 self.move_mouse_to(
-                        group
-                    )
+                    group
+                )
                 sleep(0.2)
                 if group_name not in last_groups:
                     logging.info(f"[{self.profile_id}] Sending post to {group_name}")
