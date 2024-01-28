@@ -5,6 +5,7 @@ from settings import DRIVER_PATH
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import ActionChains
 
 class Client:
     def __init__(self, profile_id: str) -> None:
@@ -29,6 +30,7 @@ class Client:
 
         last_groups = []
 
+        counter = 0
         while True:
             try:
                 self.driver.find_element(
@@ -59,9 +61,14 @@ class Client:
                 group_name = group.text
                 if group_name not in last_groups:
                     logging.info(f"[{self.profile_id}] Sending post to {group_name}")
+                    self.move_mouse_to(
+                        group
+                    )
+                    sleep(2)
+                    
                     group.click()
 
-                    sleep(2)
+                    sleep(1)
                     self.driver.find_element(
                         By.CSS_SELECTOR, "[data-l=\"t,button.submit\"]"
                     ).click()
@@ -69,7 +76,14 @@ class Client:
                     break
 
             logging.info(f"[{self.profile_id}] Reposting to another group")
+            counter += 1
+
             sleep(5)
+
+    def move_mouse_to(self, element):
+        ActionChains(self.driver)\
+            .move_to_element(element)\
+            .perform()
 
     def __del__(self) -> None:
         """
