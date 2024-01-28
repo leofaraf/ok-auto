@@ -59,12 +59,12 @@ class Client:
 
             for group in groups:
                 group_name = group.text
-                if group_name not in last_groups:
-                    logging.info(f"[{self.profile_id}] Sending post to {group_name}")
-                    self.move_mouse_to(
+                self.move_mouse_to(
                         group
                     )
-                    sleep(2)
+                sleep(0.2)
+                if group_name not in last_groups:
+                    logging.info(f"[{self.profile_id}] Sending post to {group_name}")
                     
                     group.click()
 
