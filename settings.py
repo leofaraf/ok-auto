@@ -1,8 +1,8 @@
 # For usage:
 
-POST_LINK = "https://ok.ru/semena.partner/topic/156783421902926"
+POST_LINK = "https://ok.ru/profile/585355021641/statuses/156754916977481"
 PROFILES = [
-    255300195
+    261093557
 ]
 
 # Prepare:

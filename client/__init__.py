@@ -32,11 +32,10 @@ class Client:
         while True:
             groups = find_elements()
 
-            for group in groups:
-                self.move_mouse_to(
-                    group
-                )
-                sleep(.1)
+            self.move_mouse_to(
+                groups[-1]
+            )
+            sleep(.3)
 
             new_groups = find_elements()
         
