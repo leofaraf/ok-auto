@@ -23,14 +23,35 @@ class Client:
         )
         self.profile_id = profile_id
 
+    def find_groups(self):
+        def find_elements():
+            return self.driver.find_elements(
+                    By.CSS_SELECTOR, "[id^=\"reshare_XpostGroupSuggest_\"]>div>:nth-child(2)>:first-child"
+            )
+        
+        while True:
+            groups = find_elements()
+
+            for group in groups:
+                self.move_mouse_to(
+                    group
+                )
+                sleep(.1)
+
+            new_groups = find_elements()
+        
+            if len(groups) == len(new_groups):
+                return new_groups
+
+
     def share_to_groups(self, post_link: str):
+
         self.driver.get(post_link)
         logging.info(f"[{self.profile_id}] {self.driver.title}")
         sleep(1)
 
         last_groups = []
 
-        counter = 0
         while True:
             try:
                 self.driver.find_element(
@@ -49,15 +70,7 @@ class Client:
 
             sleep(2)
 
-            groups = self.driver.find_elements(
-                By.CSS_SELECTOR, "[id^=\"reshare_XpostGroupSuggest_\"]>div>:nth-child(2)>:first-child"
-            )
-            
-            if len(groups) == 0:
-                logging.info(f"[{self.profile_id}] Can't locate available groups in account {groups}")
-                break
-
-            for group in groups:
+            for group in self.find_groups():
                 group_name = group.text
                 self.move_mouse_to(
                     group
@@ -76,8 +89,6 @@ class Client:
                     break
 
             logging.info(f"[{self.profile_id}] Reposting to another group")
-            counter += 1
-
             sleep(5)
 
     def move_mouse_to(self, element):
