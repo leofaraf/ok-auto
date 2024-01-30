@@ -54,11 +54,11 @@ class Client:
         while True:
             try:
                 self.driver.find_element(
-                    By.CSS_SELECTOR, "[data-widget-item-type=\"reshare\"]"
+                    By.CSS_SELECTOR, "[data-widget-item-type=\"reshare\"]>div>.__inactive>button"
                 ).click()
-            except:
+            except Exception as e:
                 # When group'll be succesful completed program move to POST PAGE where'll be share button, BUT if all groups'll be added then in FOR willn't called "break" and in new cycle "reshare" button'll not be found
-                logging.info(f"[{self.profile_id}] All groups added")
+                logging.info(f"[{self.profile_id}] All groups added ({e})")
                 break
 
             sleep(2)
