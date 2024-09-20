@@ -1,27 +1,45 @@
+﻿from lib2to3.pgen2 import driver
 from time import sleep
 import selenium_dolphin as dolphin
 import logging
 from settings import DRIVER_PATH
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import ActionChains
+from selenium.common.exceptions import ElementClickInterceptedException
+
 
 class Client:
     def __init__(self, profile_id: str) -> None:
         # WORK ONLY FOR RUSSIAN LANGUAGE ACCOUNTS.
 
+        self.profile_id = profile_id
         response = dolphin.run_profile(profile_id)
+        print("Response: {}.".format(response))
         port = response['automation']['port']
         options = Options()
         options.add_argument("--start-maximized")
+        options.add_argument("--disable-notifications")
 
         self.driver = dolphin.get_driver(
             options=options,
             port=port,
             driver_path=DRIVER_PATH
         )
-        self.profile_id = profile_id
+
+    def click(self, element):
+        wait = WebDriverWait(self.driver, 20)
+        try:
+            el = wait.until(EC.element_to_be_clickable(element))
+            el.click()
+
+        except ElementClickInterceptedException:
+            logging.error("Trying to click on the button again")
+            self.driver.execute_script("arguments[0].click()", el)
+
 
     def find_groups(self):
         def find_elements():
@@ -53,9 +71,11 @@ class Client:
 
         while True:
             try:
-                self.driver.find_element(
-                    By.CSS_SELECTOR, "[data-widget-item-type=\"reshare\"]>div>.__inactive>button"
-                ).click()
+                self.click(
+                    self.driver.find_element(
+                        By.CSS_SELECTOR, "[data-widget-item-type=\"reshare\"]>div>.__inactive>button"
+                    )
+                )
             except Exception as e:
                 # When group'll be succesful completed program move to POST PAGE where'll be share button, BUT if all groups'll be added then in FOR willn't called "break" and in new cycle "reshare" button'll not be found
                 logging.info(f"[{self.profile_id}] All groups added ({e})")

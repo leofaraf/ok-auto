@@ -1,10 +1,10 @@
 # For usage:
 
-POST_LINK = "https://ok.ru/profile/585355021641/statuses/156754916977481"
+POST_LINK = "https://ok.ru/semena.partner/topic/156783421902926"
+
 PROFILES = [
-    261093557
+	435998164
 ]
 
 # Prepare:
-
-DRIVER_PATH = "./driver/chromedriver.exe"
+DRIVER_PATH = "driver/chromedriver.exe"
