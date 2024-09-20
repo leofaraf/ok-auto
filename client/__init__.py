@@ -1,34 +1,33 @@
 ﻿from lib2to3.pgen2 import driver
 from time import sleep
-import selenium_dolphin as dolphin
+import pyanty as dolphin
 import logging
-from settings import DRIVER_PATH
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import ActionChains
+from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
-
+from utils.adspower import get_driver, start_profile, stop_profile 
+from pyanty import DolphinAPI
+import requests
 
 class Client:
     def __init__(self, profile_id: str) -> None:
         # WORK ONLY FOR RUSSIAN LANGUAGE ACCOUNTS.
 
         self.profile_id = profile_id
-        response = dolphin.run_profile(profile_id)
-        print("Response: {}.".format(response))
-        port = response['automation']['port']
-        options = Options()
+        logging.info(f"Profile id: {profile_id}")
+        
+        response = start_profile(profile_id)
+
+        options = webdriver.ChromeOptions()
         options.add_argument("--start-maximized")
         options.add_argument("--disable-notifications")
 
-        self.driver = dolphin.get_driver(
-            options=options,
-            port=port,
-            driver_path=DRIVER_PATH
-        )
+        self.driver = get_driver(response, options)
 
     def click(self, element):
         wait = WebDriverWait(self.driver, 20)
@@ -127,5 +126,4 @@ class Client:
         - [1238103218] Exiting...
         """
         logging.info(f"[{self.profile_id}] Exiting...")
-        self.driver.quit()
-        dolphin.close_profile(self.profile_id)
+        stop_profile(self.profile_id)
